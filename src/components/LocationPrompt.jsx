@@ -10,36 +10,26 @@ export default function LocationPrompt({ onLocation, onSearchCity }) {
       setError('Geolocation is not supported by your browser.');
       return;
     }
-
     setLocating(true);
     setError(null);
-
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setLocating(false);
-        onLocation(pos.coords.latitude, pos.coords.longitude);
-      },
-      (err) => {
-        setLocating(false);
-        setError('Unable to get your location. Try searching a city instead.');
-      },
+      (pos) => { setLocating(false); onLocation(pos.coords.latitude, pos.coords.longitude); },
+      () => { setLocating(false); setError('Unable to get your location. Try searching a city instead.'); },
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }
 
   function handleCitySearch(e) {
     e.preventDefault();
-    if (cityQuery.trim()) {
-      onSearchCity(cityQuery.trim());
-    }
+    if (cityQuery.trim()) onSearchCity(cityQuery.trim());
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-coffee-100 to-coffee-200 p-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-coffee-100 to-coffee-200 dark:from-gray-900 dark:to-gray-800 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
         <div className="text-6xl mb-4">&#9749;</div>
-        <h2 className="text-2xl font-bold text-coffee-800 mb-2">Welcome to BrewFind</h2>
-        <p className="text-coffee-500 mb-6">
+        <h2 className="text-2xl font-bold text-coffee-800 dark:text-coffee-100 mb-2">Welcome to BrewFind</h2>
+        <p className="text-coffee-500 dark:text-coffee-300 mb-6">
           Discover the best coffee shops near you or anywhere you're planning to visit.
         </p>
 
@@ -62,9 +52,9 @@ export default function LocationPrompt({ onLocation, onSearchCity }) {
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <hr className="flex-1 border-coffee-200" />
-          <span className="text-coffee-400 text-sm">or search a city</span>
-          <hr className="flex-1 border-coffee-200" />
+          <hr className="flex-1 border-coffee-200 dark:border-gray-600" />
+          <span className="text-coffee-400 dark:text-coffee-500 text-sm">or search a city</span>
+          <hr className="flex-1 border-coffee-200 dark:border-gray-600" />
         </div>
 
         <form onSubmit={handleCitySearch} className="flex gap-2">
@@ -73,7 +63,7 @@ export default function LocationPrompt({ onLocation, onSearchCity }) {
             value={cityQuery}
             onChange={(e) => setCityQuery(e.target.value)}
             placeholder="e.g. New Port Richey, FL"
-            className="flex-1 border border-coffee-200 rounded-xl px-4 py-3 bg-white text-coffee-900 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-400"
+            className="flex-1 border border-coffee-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-coffee-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-coffee-400 placeholder-coffee-400 dark:placeholder-gray-400"
           />
           <button
             type="submit"
@@ -83,9 +73,7 @@ export default function LocationPrompt({ onLocation, onSearchCity }) {
           </button>
         </form>
 
-        {error && (
-          <p className="mt-4 text-red-500 text-sm">{error}</p>
-        )}
+        {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
       </div>
     </div>
   );

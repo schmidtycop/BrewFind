@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function AppHeader({ onSearchCity, onShowFavorites, showingFavorites, onResetLocation }) {
+export default function AppHeader({ onSearchCity, onShowFavorites, showingFavorites, onResetLocation, dark, onToggleDark }) {
   const [query, setQuery] = useState('');
 
   function handleSubmit(e) {
@@ -12,8 +12,8 @@ export default function AppHeader({ onSearchCity, onShowFavorites, showingFavori
   }
 
   return (
-    <header className="bg-coffee-800 text-white px-4 py-3 shadow-lg">
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 flex-wrap">
+    <header className="bg-coffee-800 dark:bg-gray-900 text-white px-4 py-3 shadow-lg">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-3 flex-wrap">
         <h1 className="text-xl font-bold tracking-tight flex items-center gap-2">
           <span className="text-2xl">&#9749;</span> BrewFind
         </h1>
@@ -25,7 +25,7 @@ export default function AppHeader({ onSearchCity, onShowFavorites, showingFavori
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search a city or neighborhood..."
-              className="flex-1 px-3 py-2 rounded-l-lg bg-white text-coffee-900 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400"
+              className="flex-1 px-3 py-2 rounded-l-lg bg-white dark:bg-gray-700 text-coffee-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 placeholder-coffee-400 dark:placeholder-gray-400"
             />
             <button
               type="submit"
@@ -36,10 +36,17 @@ export default function AppHeader({ onSearchCity, onShowFavorites, showingFavori
           </div>
         </form>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={onToggleDark}
+            className="text-lg hover:scale-110 transition-transform"
+            title={dark ? 'Light mode' : 'Dark mode'}
+          >
+            {dark ? '☀️' : '🌙'}
+          </button>
           <button
             onClick={onResetLocation}
-            className="text-sm bg-coffee-600 hover:bg-coffee-500 text-white px-3 py-2 rounded-lg transition-colors"
+            className="text-sm bg-coffee-600 dark:bg-gray-700 hover:bg-coffee-500 dark:hover:bg-gray-600 text-white px-3 py-2 rounded-lg transition-colors"
             title="Change location"
           >
             📍 Reset

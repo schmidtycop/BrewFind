@@ -20,9 +20,7 @@ const userIcon = new L.DivIcon({
 function MapUpdater({ center }) {
   const map = useMap();
   useEffect(() => {
-    if (center) {
-      map.setView(center, 14, { animate: true });
-    }
+    if (center) map.setView(center, 13, { animate: true });
   }, [center, map]);
   return null;
 }
@@ -33,13 +31,10 @@ function MapMoveDetector({ onMapMoved, center }) {
 
   useMapEvents({
     moveend(e) {
-      const newCenter = e.target.getCenter();
-      // Only show the button if the map moved significantly (more than ~500m)
-      const dist = Math.sqrt(
-        Math.pow(newCenter.lat - center[0], 2) + Math.pow(newCenter.lng - center[1], 2)
-      );
+      const c = e.target.getCenter();
+      const dist = Math.sqrt((c.lat - center[0]) ** 2 + (c.lng - center[1]) ** 2);
       if (dist > 0.005) {
-        setMapCenter([newCenter.lat, newCenter.lng]);
+        setMapCenter([c.lat, c.lng]);
         setShowButton(true);
       } else {
         setShowButton(false);
@@ -47,21 +42,15 @@ function MapMoveDetector({ onMapMoved, center }) {
     },
   });
 
-  // Hide button when center prop changes (new search was performed)
-  useEffect(() => {
-    setShowButton(false);
-  }, [center]);
+  useEffect(() => setShowButton(false), [center]);
 
   if (!showButton) return null;
 
   return (
     <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1000]">
       <button
-        onClick={() => {
-          onMapMoved(mapCenter[0], mapCenter[1]);
-          setShowButton(false);
-        }}
-        className="bg-white text-coffee-800 font-semibold px-4 py-2 rounded-full shadow-lg border border-coffee-200 hover:bg-coffee-50 transition-colors text-sm"
+        onClick={() => { onMapMoved(mapCenter[0], mapCenter[1]); setShowButton(false); }}
+        className="bg-white dark:bg-gray-800 text-coffee-800 dark:text-coffee-100 font-semibold px-4 py-2 rounded-full shadow-lg border border-coffee-200 dark:border-gray-600 hover:bg-coffee-50 dark:hover:bg-gray-700 transition-colors text-sm"
       >
         🔍 Search this area
       </button>
@@ -74,12 +63,7 @@ export default function CoffeeMap({ shops, center, onShopClick, selectedShopId, 
 
   return (
     <div className="relative w-full h-full">
-      <MapContainer
-        center={center}
-        zoom={14}
-        scrollWheelZoom={true}
-        className="z-0"
-      >
+      <MapContainer center={center} zoom={13} scrollWheelZoom={true} className="z-0">
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -94,14 +78,12 @@ export default function CoffeeMap({ shops, center, onShopClick, selectedShopId, 
             key={shop.id}
             position={[shop.lat, shop.lng]}
             icon={coffeeIcon}
-            eventHandlers={{
-              click: () => onShopClick?.(shop.id),
-            }}
+            eventHandlers={{ click: () => onShopClick?.(shop.id) }}
           >
             <Popup>
               <div className="font-semibold">{shop.name}</div>
               {shop.openingHours && <div className="text-xs">🕐 {shop.openingHours}</div>}
-              <div className="text-xs text-gray-500">{shop.address}</div>
+              {shop.address && <div className="text-xs text-gray-500">{shop.address}</div>}
             </Popup>
           </Marker>
         ))}

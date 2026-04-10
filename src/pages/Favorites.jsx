@@ -1,14 +1,14 @@
 import CoffeeShopCard from '../components/CoffeeShopCard';
 
-export default function Favorites({ favorites, isFavorite, onToggleFavorite }) {
+export default function Favorites({ favorites, isFavorite, onToggleFavorite, getNote, onSaveNote }) {
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-xl font-bold text-coffee-800 mb-4">
+      <h2 className="text-xl font-bold text-coffee-800 dark:text-coffee-100 mb-4">
         Your Favorite Coffee Shops
       </h2>
 
       {favorites.length === 0 ? (
-        <div className="text-center py-16 text-coffee-400">
+        <div className="text-center py-16 text-coffee-400 dark:text-coffee-500">
           <div className="text-5xl mb-4">💛</div>
           <p className="text-lg">No favorites yet</p>
           <p className="text-sm mt-1">
@@ -23,6 +23,8 @@ export default function Favorites({ favorites, isFavorite, onToggleFavorite }) {
               shop={shop}
               isFavorite={isFavorite(shop.id)}
               onToggleFavorite={onToggleFavorite}
+              note={getNote(shop.id)}
+              onSaveNote={onSaveNote}
             />
           ))}
         </div>

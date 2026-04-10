@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-coffee-50: #fdf8f0;
   --color-coffee-100: #f5e6d0;
@@ -20,6 +22,12 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--color-coffee-50);
   color: var(--color-coffee-900);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.dark body {
+  background-color: #111827;
+  color: #f3f4f6;
 }
 
 .leaflet-container {

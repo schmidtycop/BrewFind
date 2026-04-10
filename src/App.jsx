@@ -4,6 +4,8 @@ import LocationPrompt from './components/LocationPrompt';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import { useFavorites } from './hooks/useFavorites';
+import { useNotes } from './hooks/useNotes';
+import { useDarkMode } from './hooks/useDarkMode';
 import { searchNearbyCoffeeShops, searchCoffeeShopsByCity } from './api/places';
 
 function App() {
@@ -14,12 +16,14 @@ function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState(null);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
+  const { getNote, setNote } = useNotes();
+  const [dark, toggleDark] = useDarkMode();
 
-  async function handleNearbySearch(lat, lng) {
+  async function handleNearbySearch(lat, lng, radius) {
     setIsSearching(true);
     setError(null);
     try {
-      const results = await searchNearbyCoffeeShops(lat, lng);
+      const results = await searchNearbyCoffeeShops(lat, lng, radius);
       setShops(results);
       setCenter([lat, lng]);
     } catch {
@@ -56,6 +60,10 @@ function App() {
     handleCitySearch(query);
   }
 
+  function handleExpandSearch() {
+    if (center) handleNearbySearch(center[0], center[1], 15000);
+  }
+
   if (!locationSet) {
     return (
       <LocationPrompt
@@ -66,7 +74,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-coffee-50 flex flex-col">
+    <div className="min-h-screen bg-coffee-50 dark:bg-gray-900 flex flex-col transition-colors">
       <AppHeader
         onSearchCity={handleCitySearch}
         onShowFavorites={() => setShowFavorites(!showFavorites)}
@@ -78,6 +86,8 @@ function App() {
           setError(null);
           setShowFavorites(false);
         }}
+        dark={dark}
+        onToggleDark={toggleDark}
       />
 
       {showFavorites ? (
@@ -85,6 +95,8 @@ function App() {
           favorites={favorites}
           isFavorite={isFavorite}
           onToggleFavorite={toggleFavorite}
+          getNote={getNote}
+          onSaveNote={setNote}
         />
       ) : (
         <Home
@@ -94,7 +106,10 @@ function App() {
           error={error}
           isFavorite={isFavorite}
           onToggleFavorite={toggleFavorite}
-          onSearchArea={handleNearbySearch}
+          onSearchArea={(lat, lng) => handleNearbySearch(lat, lng)}
+          onExpandSearch={handleExpandSearch}
+          getNote={getNote}
+          onSaveNote={setNote}
         />
       )}
     </div>

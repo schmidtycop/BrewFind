@@ -104,9 +104,10 @@ async function overpassSearch(lat, lng, radius) {
   const latDelta = radius / 111320;
   const lngDelta = radius / (111320 * Math.cos((lat * Math.PI) / 180));
   const bbox = `${lat - latDelta},${lng - lngDelta},${lat + latDelta},${lng + lngDelta}`;
-  // nwr = node/way/relation — catches buildings mapped as outlines (Starbucks, etc.)
+  // nwr = node/way/relation — catches buildings mapped as outlines
   // out center gives a single lat/lng for ways and relations
-  const query = `[out:json][timeout:15];(nwr["amenity"="cafe"](${bbox});nwr["cuisine"~"coffee"](${bbox});nwr["shop"="coffee"](${bbox}););out center 60;`;
+  // Searches: cafes, coffee cuisine, coffee shops, coffee brands, and names containing "coffee"
+  const query = `[out:json][timeout:15];(nwr["amenity"="cafe"](${bbox});nwr["cuisine"~"coffee",i](${bbox});nwr["shop"="coffee"](${bbox});nwr["brand"~"coffee|starbucks|dunkin|peet|caribou|tim horton|dutch bros|badass",i](${bbox});nwr["name"~"coffee|espresso|café|cafe latte|roaster",i]["amenity"](${bbox}););out center 80;`;
 
   let lastError;
   for (const server of OVERPASS_SERVERS) {
@@ -120,7 +121,10 @@ async function overpassSearch(lat, lng, radius) {
       clearTimeout(timeout);
       if (!response.ok) { lastError = new Error(`Overpass: ${response.status}`); continue; }
       const data = await response.json();
-      return (data.elements || []).map(formatOverpassPlace).filter(Boolean);
+      const places = (data.elements || []).map(formatOverpassPlace).filter(Boolean);
+      // Deduplicate by id (union usually handles this, but just in case)
+      const seen = new Set();
+      return places.filter((p) => { if (seen.has(p.id)) return false; seen.add(p.id); return true; });
     } catch (error) {
       lastError = error;
     }

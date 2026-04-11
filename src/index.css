@@ -35,3 +35,33 @@ body {
   height: 100%;
   border-radius: 0.75rem;
 }
+
+/* Loading overlay animations */
+@keyframes steam1 {
+  0%, 100% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 0.7; transform: translateY(-6px); }
+}
+@keyframes steam2 {
+  0%, 100% { opacity: 0; transform: translateY(0); }
+  40% { opacity: 0.7; transform: translateY(-8px); }
+}
+@keyframes steam3 {
+  0%, 100% { opacity: 0; transform: translateY(0); }
+  60% { opacity: 0.7; transform: translateY(-5px); }
+}
+@keyframes fill {
+  0% { transform: translateY(42px); }
+  100% { transform: translateY(0); }
+}
+@keyframes dot {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+.animate-steam1 { animation: steam1 2s ease-in-out infinite; }
+.animate-steam2 { animation: steam2 2.3s ease-in-out infinite 0.3s; }
+.animate-steam3 { animation: steam3 2.6s ease-in-out infinite 0.6s; }
+.animate-fill { animation: fill 2s ease-out forwards; }
+.animate-dot1 { animation: dot 1.4s ease-in-out infinite; }
+.animate-dot2 { animation: dot 1.4s ease-in-out infinite 0.2s; }
+.animate-dot3 { animation: dot 1.4s ease-in-out infinite 0.4s; }

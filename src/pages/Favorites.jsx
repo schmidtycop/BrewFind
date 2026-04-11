@@ -1,6 +1,17 @@
 import CoffeeShopCard from '../components/CoffeeShopCard';
 
-export default function Favorites({ favorites, isFavorite, onToggleFavorite, getNote, onSaveNote }) {
+export default function Favorites({
+  favorites,
+  isFavorite,
+  onToggleFavorite,
+  getNote,
+  onSaveNote,
+  isVisited,
+  visitedDate,
+  onToggleVisited,
+  getRating,
+  onSetRating,
+}) {
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h2 className="text-xl font-bold text-coffee-800 dark:text-coffee-100 mb-4">
@@ -25,6 +36,11 @@ export default function Favorites({ favorites, isFavorite, onToggleFavorite, get
               onToggleFavorite={onToggleFavorite}
               note={getNote(shop.id)}
               onSaveNote={onSaveNote}
+              isVisited={isVisited?.(shop.id)}
+              visitedDate={visitedDate?.(shop.id)}
+              onToggleVisited={onToggleVisited}
+              userRating={getRating?.(shop.id)}
+              onSetRating={onSetRating}
             />
           ))}
         </div>

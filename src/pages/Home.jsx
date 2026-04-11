@@ -14,6 +14,11 @@ export default function Home({
   onExpandSearch,
   getNote,
   onSaveNote,
+  isVisited,
+  visitedDate,
+  onToggleVisited,
+  getRating,
+  onSetRating,
 }) {
   const [selectedShopId, setSelectedShopId] = useState(null);
 
@@ -75,6 +80,11 @@ export default function Home({
               onShopClick={setSelectedShopId}
               getNote={getNote}
               onSaveNote={onSaveNote}
+              isVisited={isVisited}
+              visitedDate={visitedDate}
+              onToggleVisited={onToggleVisited}
+              getRating={getRating}
+              onSetRating={onSetRating}
             />
           )}
         </div>

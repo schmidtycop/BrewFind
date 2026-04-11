@@ -11,6 +11,11 @@ export default function CoffeeShopList({
   onShopClick,
   getNote,
   onSaveNote,
+  isVisited,
+  visitedDate,
+  onToggleVisited,
+  getRating,
+  onSetRating,
 }) {
   const [sortBy, setSortBy] = useState('distance');
   const [filterOpen, setFilterOpen] = useState(false);
@@ -82,6 +87,11 @@ export default function CoffeeShopList({
               distance={shop.distance}
               note={getNote(shop.id)}
               onSaveNote={onSaveNote}
+              isVisited={isVisited?.(shop.id)}
+              visitedDate={visitedDate?.(shop.id)}
+              onToggleVisited={onToggleVisited}
+              userRating={getRating?.(shop.id)}
+              onSetRating={onSetRating}
             />
           ))
         )}

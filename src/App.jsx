@@ -2,11 +2,15 @@ import { useState } from 'react';
 import AppHeader from './components/AppHeader';
 import LocationPrompt from './components/LocationPrompt';
 import InstallGuide from './components/InstallGuide';
+import Onboarding from './components/Onboarding';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import { useFavorites } from './hooks/useFavorites';
 import { useNotes } from './hooks/useNotes';
 import { useDarkMode } from './hooks/useDarkMode';
+import { useVisited } from './hooks/useVisited';
+import { useRatings } from './hooks/useRatings';
+import { useOnboarding } from './hooks/useOnboarding';
 import { searchNearbyCoffeeShops, searchCoffeeShopsByCity } from './api/places';
 
 function App() {
@@ -20,6 +24,9 @@ function App() {
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const { getNote, setNote } = useNotes();
   const [dark, toggleDark] = useDarkMode();
+  const { toggleVisited, isVisited, visitedDate } = useVisited();
+  const { setRating, getRating } = useRatings();
+  const { needsOnboarding, markSeen } = useOnboarding();
 
   async function handleNearbySearch(lat, lng, radius) {
     setIsSearching(true);
@@ -77,6 +84,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-coffee-50 dark:bg-gray-900 flex flex-col transition-colors">
+      {needsOnboarding && <Onboarding onComplete={markSeen} />}
+
       <AppHeader
         onSearchCity={handleCitySearch}
         onShowFavorites={() => setShowFavorites(!showFavorites)}
@@ -102,6 +111,11 @@ function App() {
           onToggleFavorite={toggleFavorite}
           getNote={getNote}
           onSaveNote={setNote}
+          isVisited={isVisited}
+          visitedDate={visitedDate}
+          onToggleVisited={toggleVisited}
+          getRating={getRating}
+          onSetRating={setRating}
         />
       ) : (
         <Home
@@ -115,6 +129,11 @@ function App() {
           onExpandSearch={handleExpandSearch}
           getNote={getNote}
           onSaveNote={setNote}
+          isVisited={isVisited}
+          visitedDate={visitedDate}
+          onToggleVisited={toggleVisited}
+          getRating={getRating}
+          onSetRating={setRating}
         />
       )}
     </div>

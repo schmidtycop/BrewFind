@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import StarRating from './StarRating';
 
 export default function CoffeeShopCard({
   shop,
@@ -9,6 +10,11 @@ export default function CoffeeShopCard({
   distance,
   note,
   onSaveNote,
+  isVisited,
+  visitedDate,
+  onToggleVisited,
+  userRating,
+  onSetRating,
 }) {
   const [showNote, setShowNote] = useState(false);
   const [noteText, setNoteText] = useState(note || '');
@@ -39,6 +45,8 @@ export default function CoffeeShopCard({
     setShowNote(false);
   }
 
+  const visitDate = visitedDate ? new Date(visitedDate).toLocaleDateString() : null;
+
   return (
     <div
       onClick={() => onClick?.(shop.id)}
@@ -48,7 +56,14 @@ export default function CoffeeShopCard({
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-coffee-800 dark:text-coffee-100 truncate">{shop.name}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="font-bold text-coffee-800 dark:text-coffee-100 truncate">{shop.name}</h3>
+            {isVisited && (
+              <span className="text-xs bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded-full whitespace-nowrap">
+                ✓ Been here
+              </span>
+            )}
+          </div>
           {shop.address && (
             <p className="text-sm text-coffee-500 dark:text-coffee-300 truncate mt-0.5">{shop.address}</p>
           )}
@@ -61,6 +76,16 @@ export default function CoffeeShopCard({
           {isFavorite ? '❤️' : '🤍'}
         </button>
       </div>
+
+      {/* Star rating */}
+      {onSetRating && (
+        <div className="mt-2 flex items-center gap-2">
+          <StarRating rating={userRating || 0} onRate={(stars) => onSetRating(shop.id, stars)} size="text-base" />
+          {userRating > 0 && (
+            <span className="text-xs text-coffee-400 dark:text-coffee-500">Your rating</span>
+          )}
+        </div>
+      )}
 
       <div className="flex items-center flex-wrap gap-2 mt-3 text-sm">
         {distance !== undefined && (
@@ -91,8 +116,13 @@ export default function CoffeeShopCard({
         )}
       </div>
 
+      {/* Visited date */}
+      {isVisited && visitDate && (
+        <p className="text-xs text-coffee-400 dark:text-coffee-500 mt-1">Visited {visitDate}</p>
+      )}
+
       {/* Action buttons */}
-      <div className="flex items-center gap-2 mt-3">
+      <div className="flex items-center gap-2 mt-3 flex-wrap">
         <button
           onClick={handleDirections}
           className="text-xs bg-coffee-100 dark:bg-gray-700 text-coffee-700 dark:text-coffee-200 px-3 py-1.5 rounded-lg hover:bg-coffee-200 dark:hover:bg-gray-600 transition-colors"
@@ -105,6 +135,18 @@ export default function CoffeeShopCard({
         >
           📤 Share
         </button>
+        {onToggleVisited && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleVisited(shop.id); }}
+            className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
+              isVisited
+                ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'
+                : 'bg-coffee-100 dark:bg-gray-700 text-coffee-700 dark:text-coffee-200 hover:bg-coffee-200 dark:hover:bg-gray-600'
+            }`}
+          >
+            {isVisited ? '✓ Been Here' : '☐ Been Here'}
+          </button>
+        )}
         <button
           onClick={(e) => { e.stopPropagation(); setShowNote(!showNote); }}
           className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function AppHeader({ onSearchCity, onShowFavorites, showingFavorites, onResetLocation, dark, onToggleDark }) {
+export default function AppHeader({ onSearchCity, onShowFavorites, showingFavorites, onResetLocation, dark, onToggleDark, onShowInstall }) {
   const [query, setQuery] = useState('');
 
   function handleSubmit(e) {
@@ -37,6 +37,13 @@ export default function AppHeader({ onSearchCity, onShowFavorites, showingFavori
         </form>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={onShowInstall}
+            className="text-sm bg-amber-500 hover:bg-amber-400 text-coffee-900 px-3 py-2 rounded-lg font-medium transition-colors"
+            title="Install app"
+          >
+            Install
+          </button>
           <button
             onClick={onToggleDark}
             className="text-lg hover:scale-110 transition-transform"

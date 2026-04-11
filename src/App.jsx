@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import AppHeader from './components/AppHeader';
 import LocationPrompt from './components/LocationPrompt';
+import InstallGuide from './components/InstallGuide';
 import Home from './pages/Home';
 import Favorites from './pages/Favorites';
 import { useFavorites } from './hooks/useFavorites';
@@ -11,6 +12,7 @@ import { searchNearbyCoffeeShops, searchCoffeeShopsByCity } from './api/places';
 function App() {
   const [locationSet, setLocationSet] = useState(false);
   const [showFavorites, setShowFavorites] = useState(false);
+  const [showInstall, setShowInstall] = useState(false);
   const [shops, setShops] = useState([]);
   const [center, setCenter] = useState(null);
   const [isSearching, setIsSearching] = useState(false);
@@ -88,7 +90,10 @@ function App() {
         }}
         dark={dark}
         onToggleDark={toggleDark}
+        onShowInstall={() => setShowInstall(true)}
       />
+
+      {showInstall && <InstallGuide onClose={() => setShowInstall(false)} />}
 
       {showFavorites ? (
         <Favorites

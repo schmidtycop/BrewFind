@@ -1,10 +1,6 @@
-const CACHE_NAME = 'brewfind-v1';
-const STATIC_ASSETS = ['/', '/index.html', '/manifest.json'];
+const CACHE_NAME = 'brewfind-v2';
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
-  );
   self.skipWaiting();
 });
 
@@ -18,14 +14,17 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Network first for API calls, cache first for static assets
-  if (event.request.url.includes('overpass') || event.request.url.includes('nominatim') || event.request.url.includes('googleapis')) {
-    event.respondWith(
-      fetch(event.request).catch(() => caches.match(event.request))
-    );
-  } else {
-    event.respondWith(
-      caches.match(event.request).then((cached) => cached || fetch(event.request))
-    );
-  }
+  // Network first, fall back to cache
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        // Cache successful responses
+        if (response.ok && event.request.method === 'GET') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
 });

@@ -104,8 +104,9 @@ async function overpassSearch(lat, lng, radius) {
   const latDelta = radius / 111320;
   const lngDelta = radius / (111320 * Math.cos((lat * Math.PI) / 180));
   const bbox = `${lat - latDelta},${lng - lngDelta},${lat + latDelta},${lng + lngDelta}`;
-  // Search cafes + any place with coffee cuisine (catches Starbucks, Dunkin, etc.)
-  const query = `[out:json][timeout:15];(node["amenity"="cafe"](${bbox});node["cuisine"~"coffee"](${bbox}););out body 40;`;
+  // nwr = node/way/relation — catches buildings mapped as outlines (Starbucks, etc.)
+  // out center gives a single lat/lng for ways and relations
+  const query = `[out:json][timeout:15];(nwr["amenity"="cafe"](${bbox});nwr["cuisine"~"coffee"](${bbox});nwr["shop"="coffee"](${bbox}););out center 60;`;
 
   let lastError;
   for (const server of OVERPASS_SERVERS) {
@@ -119,7 +120,7 @@ async function overpassSearch(lat, lng, radius) {
       clearTimeout(timeout);
       if (!response.ok) { lastError = new Error(`Overpass: ${response.status}`); continue; }
       const data = await response.json();
-      return (data.elements || []).map(formatOverpassPlace);
+      return (data.elements || []).map(formatOverpassPlace).filter(Boolean);
     } catch (error) {
       lastError = error;
     }
@@ -130,12 +131,16 @@ async function overpassSearch(lat, lng, radius) {
 function formatOverpassPlace(el) {
   const t = el.tags || {};
   const openingHours = t.opening_hours || null;
+  // Nodes have lat/lon directly; ways/relations use center
+  const lat = el.lat ?? el.center?.lat;
+  const lng = el.lon ?? el.center?.lon;
+  if (!lat || !lng) return null;
   return {
-    id: `osm-${el.id}`,
+    id: `osm-${el.type?.[0] || 'n'}${el.id}`,
     name: t.name || t['name:en'] || 'Coffee Shop',
     address: buildAddress(t),
-    lat: el.lat,
-    lng: el.lon,
+    lat,
+    lng,
     rating: null,
     reviewCount: 0,
     priceLevel: null,

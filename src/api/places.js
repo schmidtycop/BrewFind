@@ -142,6 +142,7 @@ function formatOverpassPlace(el) {
     isOpen: parseIsOpen(openingHours),
     website: t.website || t['contact:website'] || null,
     phone: t.phone || t['contact:phone'] || null,
+    menu: t.menu || t['contact:menu'] || null,
     openingHours,
   };
 }
@@ -204,6 +205,7 @@ function formatGooglePlace(p) {
     isOpen: p.currentOpeningHours?.openNow ?? null,
     website: null,
     phone: null,
+    menu: null,
     openingHours: null,
   };
 }

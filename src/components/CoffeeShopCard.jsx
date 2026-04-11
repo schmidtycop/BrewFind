@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import StarRating from './StarRating';
+import { haptic } from '../utils/haptic';
 
 export default function CoffeeShopCard({
   shop,
@@ -69,7 +70,7 @@ export default function CoffeeShopCard({
           )}
         </div>
         <button
-          onClick={(e) => { e.stopPropagation(); onToggleFavorite(shop); }}
+          onClick={(e) => { e.stopPropagation(); haptic(); onToggleFavorite(shop); }}
           className="text-xl hover:scale-125 transition-transform flex-shrink-0"
           title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
@@ -80,7 +81,11 @@ export default function CoffeeShopCard({
       {/* Star rating */}
       {onSetRating && (
         <div className="mt-2 flex items-center gap-2">
-          <StarRating rating={userRating || 0} onRate={(stars) => onSetRating(shop.id, stars)} size="text-base" />
+          <StarRating
+            rating={userRating || 0}
+            onRate={(stars) => { haptic(5); onSetRating(shop.id, stars); }}
+            size="text-base"
+          />
           {userRating > 0 && (
             <span className="text-xs text-coffee-400 dark:text-coffee-500">Your rating</span>
           )}
@@ -137,7 +142,7 @@ export default function CoffeeShopCard({
         </button>
         {onToggleVisited && (
           <button
-            onClick={(e) => { e.stopPropagation(); onToggleVisited(shop.id); }}
+            onClick={(e) => { e.stopPropagation(); haptic(15); onToggleVisited(shop.id); }}
             className={`text-xs px-3 py-1.5 rounded-lg transition-colors ${
               isVisited
                 ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'
@@ -157,6 +162,17 @@ export default function CoffeeShopCard({
         >
           📝 {note ? 'View Note' : 'Add Note'}
         </button>
+        {shop.menu && (
+          <a
+            href={shop.menu}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="text-xs bg-coffee-100 dark:bg-gray-700 text-coffee-700 dark:text-coffee-200 px-3 py-1.5 rounded-lg hover:bg-coffee-200 dark:hover:bg-gray-600 transition-colors"
+          >
+            🍽️ Menu
+          </a>
+        )}
         {shop.website && (
           <a
             href={shop.website}

@@ -127,6 +127,7 @@ function App() {
           onToggleFavorite={toggleFavorite}
           onSearchArea={(lat, lng) => handleNearbySearch(lat, lng)}
           onExpandSearch={handleExpandSearch}
+          onRefresh={() => center && handleNearbySearch(center[0], center[1])}
           getNote={getNote}
           onSaveNote={setNote}
           isVisited={isVisited}

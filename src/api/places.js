@@ -16,9 +16,13 @@ export async function searchNearbyCoffeeShops(lat, lng, radius = 8000) {
 export async function searchCoffeeShopsByCity(cityQuery) {
   if (useGoogle) return googleTextSearch(cityQuery);
 
-  const geoResponse = await fetch(
-    `${NOMINATIM_API}?q=${encodeURIComponent(cityQuery)}&format=json&limit=1`
-  );
+  // Detect if input is a zip code (5 digits or 5+4 format)
+  const isZip = /^\d{5}(-\d{4})?$/.test(cityQuery.trim());
+  const query = isZip
+    ? `${NOMINATIM_API}?postalcode=${encodeURIComponent(cityQuery.trim())}&country=us&format=json&limit=1`
+    : `${NOMINATIM_API}?q=${encodeURIComponent(cityQuery)}&format=json&limit=1`;
+
+  const geoResponse = await fetch(query);
   if (!geoResponse.ok) throw new Error('Geocoding failed');
   const geoData = await geoResponse.json();
   if (geoData.length === 0) throw new Error('Location not found');

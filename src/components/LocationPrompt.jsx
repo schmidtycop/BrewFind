@@ -59,7 +59,7 @@ export default function LocationPrompt({ onLocation, onSearchCity }) {
 
         <div className="flex items-center gap-3 mb-4">
           <hr className="flex-1 border-coffee-200 dark:border-gray-600" />
-          <span className="text-coffee-400 dark:text-coffee-500 text-sm">or search a city</span>
+          <span className="text-coffee-400 dark:text-coffee-500 text-sm">or search a city or zip code</span>
           <hr className="flex-1 border-coffee-200 dark:border-gray-600" />
         </div>
 
@@ -69,7 +69,7 @@ export default function LocationPrompt({ onLocation, onSearchCity }) {
             type="text"
             value={cityQuery}
             onChange={(e) => setCityQuery(e.target.value)}
-            placeholder="e.g. Lexington, KY"
+            placeholder="e.g. Lexington, KY or 34652"
             className="flex-1 border border-coffee-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-coffee-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-coffee-400 placeholder-coffee-400 dark:placeholder-gray-400"
           />
           <button

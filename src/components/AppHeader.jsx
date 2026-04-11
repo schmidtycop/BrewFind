@@ -24,7 +24,7 @@ export default function AppHeader({ onSearchCity, onShowFavorites, showingFavori
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search a city or neighborhood..."
+              placeholder="City, zip code, or neighborhood..."
               className="flex-1 px-3 py-2 rounded-l-lg bg-white dark:bg-gray-700 text-coffee-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 placeholder-coffee-400 dark:placeholder-gray-400"
             />
             <button

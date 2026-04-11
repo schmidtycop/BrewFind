@@ -20,6 +20,7 @@ export default function CoffeeShopList({
   const [sortBy, setSortBy] = useState('distance');
   const [filterOpen, setFilterOpen] = useState(false);
   const [filterVisited, setFilterVisited] = useState('all'); // 'all' | 'visited' | 'new'
+  const [nameSearch, setNameSearch] = useState('');
 
   // Enrich shops with distance
   const enriched = shops.map((shop) => ({
@@ -37,6 +38,12 @@ export default function CoffeeShopList({
     filtered = filtered.filter((s) => !isVisited?.(s.id));
   }
 
+  // Filter: name search
+  if (nameSearch.trim()) {
+    const q = nameSearch.trim().toLowerCase();
+    filtered = filtered.filter((s) => s.name.toLowerCase().includes(q));
+  }
+
   // Sort
   filtered = [...filtered].sort((a, b) => {
     if (sortBy === 'distance') return (a.distance ?? 999) - (b.distance ?? 999);
@@ -51,6 +58,26 @@ export default function CoffeeShopList({
 
   return (
     <div>
+      {/* Name search */}
+      <div className="relative mb-3">
+        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-coffee-400 dark:text-coffee-500 text-sm">🔍</span>
+        <input
+          type="text"
+          value={nameSearch}
+          onChange={(e) => setNameSearch(e.target.value)}
+          placeholder="Filter by shop name..."
+          className="w-full text-sm bg-white dark:bg-gray-700 border border-coffee-200 dark:border-gray-600 text-coffee-800 dark:text-coffee-100 rounded-lg pl-8 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400"
+        />
+        {nameSearch && (
+          <button
+            onClick={() => setNameSearch('')}
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-coffee-400 hover:text-coffee-600 dark:text-coffee-500 dark:hover:text-coffee-300 text-sm"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
       {/* Controls */}
       <div className="flex items-center gap-2 mb-3 flex-wrap">
         <select

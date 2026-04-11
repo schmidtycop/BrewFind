@@ -100,14 +100,14 @@ async function overpassSearch(lat, lng, radius) {
   const latDelta = radius / 111320;
   const lngDelta = radius / (111320 * Math.cos((lat * Math.PI) / 180));
   const bbox = `${lat - latDelta},${lng - lngDelta},${lat + latDelta},${lng + lngDelta}`;
-  // Search for cafes, coffee shops, and fast food places with coffee cuisine (Starbucks, Dunkin', etc.)
-  const query = `[out:json][timeout:12];(node["amenity"="cafe"](${bbox});node["cuisine"~"coffee",i](${bbox});node["shop"="coffee"](${bbox});node["brand:wikidata"~"Q37158|Q1141226|Q191640|Q472741",i](${bbox}););out body 40;`;
+  // Search cafes + any place with coffee cuisine (catches Starbucks, Dunkin, etc.)
+  const query = `[out:json][timeout:15];(node["amenity"="cafe"](${bbox});node["cuisine"~"coffee"](${bbox}););out body 40;`;
 
   let lastError;
   for (const server of OVERPASS_SERVERS) {
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 14000);
+      const timeout = setTimeout(() => controller.abort(), 18000);
       const response = await fetch(
         `${server}?data=${encodeURIComponent(query)}`,
         { signal: controller.signal }

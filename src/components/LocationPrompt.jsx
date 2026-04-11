@@ -1,20 +1,26 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 export default function LocationPrompt({ onLocation, onSearchCity }) {
   const [cityQuery, setCityQuery] = useState('');
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState(null);
+  const cityInputRef = useRef(null);
 
   function handleGeolocate() {
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser.');
+      setError('Geolocation is not supported by this browser. Search a city below instead.');
+      cityInputRef.current?.focus();
       return;
     }
     setLocating(true);
     setError(null);
     navigator.geolocation.getCurrentPosition(
       (pos) => { setLocating(false); onLocation(pos.coords.latitude, pos.coords.longitude); },
-      () => { setLocating(false); setError('Unable to get your location. Try searching a city instead.'); },
+      () => {
+        setLocating(false);
+        setError('Location access was blocked. If opened from a text or email, try opening in Safari or Chrome directly. Or just search a city below!');
+        cityInputRef.current?.focus();
+      },
       { enableHighAccuracy: true, timeout: 10000 }
     );
   }
@@ -59,10 +65,11 @@ export default function LocationPrompt({ onLocation, onSearchCity }) {
 
         <form onSubmit={handleCitySearch} className="flex gap-2">
           <input
+            ref={cityInputRef}
             type="text"
             value={cityQuery}
             onChange={(e) => setCityQuery(e.target.value)}
-            placeholder="e.g. New Port Richey, FL"
+            placeholder="e.g. Lexington, KY"
             className="flex-1 border border-coffee-200 dark:border-gray-600 rounded-xl px-4 py-3 bg-white dark:bg-gray-700 text-coffee-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-coffee-400 placeholder-coffee-400 dark:placeholder-gray-400"
           />
           <button

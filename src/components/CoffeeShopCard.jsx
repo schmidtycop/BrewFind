@@ -162,17 +162,15 @@ export default function CoffeeShopCard({
         >
           📝 {note ? 'View Note' : 'Add Note'}
         </button>
-        {shop.menu && (
-          <a
-            href={shop.menu}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => e.stopPropagation()}
-            className="text-xs bg-coffee-100 dark:bg-gray-700 text-coffee-700 dark:text-coffee-200 px-3 py-1.5 rounded-lg hover:bg-coffee-200 dark:hover:bg-gray-600 transition-colors"
-          >
-            🍽️ Menu
-          </a>
-        )}
+        <a
+          href={shop.menu || `https://www.google.com/search?q=${encodeURIComponent(shop.name + ' menu' + (shop.address ? ' ' + shop.address : ''))}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="text-xs bg-coffee-100 dark:bg-gray-700 text-coffee-700 dark:text-coffee-200 px-3 py-1.5 rounded-lg hover:bg-coffee-200 dark:hover:bg-gray-600 transition-colors"
+        >
+          🍽️ Menu
+        </a>
         {shop.website && (
           <a
             href={shop.website}
